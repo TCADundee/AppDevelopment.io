@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="dark-theme">
+
+<header class="header">
+    <!--This is the Hamburger symbol as well as the slide in menu-->
+    <nav>
+        <div class="ham-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav><div class="off-screen-menu">
+        <ul>
+            <li><a href="index.html"> Home Page</a></li>            
+            <li><a href="saved.html">Favourited Locations</a></li>
+            <li><a href="accountSettings.html">Security and Privacy</a></li>
+        </ul>
+    </div>
+    <!--App Title that appears in the center-->
+    <h1 class="app-title">Search Settings</h1>
+
+    <!--Shows the users profile picture, opens a popup menu-->
+    <img id="profileAvatar" class="profile-pic" src="" alt="profile" />
+</header>
+
+<main class="container">
+  <h1>Search Settings</h1>
+
+  <label>Search mode</label>
+  <select id="searchMode" class="input">
+    <option value="location">Use my location</option>
+    <option value="city">Search by city</option>
+  </select>
+
+  <div id="city-row" style="margin-top:8px;">
+    <label>City (autocomplete)</label>
+    <input id="cityName" class="input" placeholder="Start typing city..." />
+  </div>
+
+  <label style="margin-top:12px;">Sort results by</label>
+  <select id="sortOption" class="input">
+    <option value="distance">Nearest first</option>
+    <option value="rating">Highest rated</option>
+    <option value="alpha">Alphabetical</option>
+  </select>
+
+  <label style="margin-top:12px;">Search Distance</label>
+<div id="distance-row" class="slider-row">
+    <input id="searchDistance" type="range" min="1" max="20" value="5" step="1" class="slider" />
+    <span id="distanceLabel">5 km</span>
+</div>
+
+  <label style="margin-top:12px;">Minimum rating</label>
+  <select id="minRating" class="input">
+    <option value="0">Any</option>
+    <option value="3">3★+</option>
+    <option value="4">4★+</option>
+    <option value="5">5★</option>
+  </select>
+  
+
+  <label style="display:block; margin-top:12px;">
+    <input id="wheelchairOnly" type="checkbox" /> Only show wheelchair accessible (requires Google data)
+  </label>
+
+  <div style="margin-top:16px;">
+    <button id="saveSettingsBtn" class="btn">Save settings</button>
+    <a href="index.html" class="btn btn-ghost">Back</a>
+  </div>
+</main>
+
+<!-- App script + Google Maps for autocomplete -->
+<script src="/js/core.js"></script>
+<script src="/js/search.js"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbgjyMYVbU7WpuG_R9isDRvq_bdU7hNCI&libraries=places&callback=initApp">
+</script>
+
+<script>
+  // wire up settings save & restore
+  document.addEventListener('DOMContentLoaded', () => {
+    // restore DOM from localStorage using app.js helper
+    setTimeout(()=>{ // short timeout to let app.js initializers run
+      if (typeof restoreSettingsToDOM === 'function') restoreSettingsToDOM();
+      const saveBtn = document.getElementById('saveSettingsBtn');
+      saveBtn && saveBtn.addEventListener('click', () => {
+        if (typeof persistSettingsFromDOM_impl === 'function') persistSettingsFromDOM_impl();
+        alert('Settings saved');
+        // hide city field if needed
+        const mode = document.getElementById('searchMode').value;
+        document.getElementById('city-row').style.display = mode === 'city' ? 'block' : 'none';
+      });
+    }, 120);
+  });
+</script>
+</body>
+</html>

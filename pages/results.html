@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hobby Finder — Results</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="dark-theme">
+
+<header class="header results-header">
+    <!--This is the Hamburger symbol as well as the slide in menu-->
+    <nav>
+        <div class="ham-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav><div class="off-screen-menu">
+        <ul>
+            <li><a href="index.html"> Home Page</a></li>
+            <li><a href="saved.html">Favourited Locations</a></li>
+            <li><a href="settings.html">Search Settings</a></li>
+            <li><a href="accountSettings.html">Security and Privacy</a></li>
+            
+        </ul>
+    </div>
+    <!--App Title that appears in the center-->
+    <h1 class="app-title-results">Results</h1>
+
+    <!--Shows the users profile picture, opens a popup menu-->
+    <img id="profileAvatar" class="profile-pic" src="" alt="profile" />
+</header>
+
+<main class="container">
+  <div class="results-searchbox">
+    <input id="searchInput" type="text" placeholder="Search for something..." />
+    <button id="searchBtn">Search</button>
+</div>
+  <p id="status" class="muted">Preparing search...</p>
+
+  <div id="results" class="results-list"></div>
+</main>
+
+<!-- App script + Google Maps -->
+ 
+<script src="/js/core.js"></script>
+<script src="/js/search.js"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbgjyMYVbU7WpuG_R9isDRvq_bdU7hNCI&libraries=places&callback=initApp">
+</script>
+</body>
+</html>
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile — Privacy</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="dark-theme">
+<header class="header">
+    <!--This is the Hamburger symbol as well as the slide in menu-->
+    <nav>
+        <div class="ham-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav><div class="off-screen-menu">
+        <ul>
+            <li><a href="index.html"> Home Page</a></li>
+            <li><a href="settings.html">Search Settings</a></li>
+            <li><a href="saved.html">Favourited Locations</a></li>
+        </ul>
+    </div>
+    <!--App Title that appears in the center-->
+    <h1 class="app-title">Hobby and Me</h1>
+
+    <!--Shows the users profile picture, opens a popup menu-->
+    <img id="profileAvatar" class="profile-pic" src="" alt="profile" />
+</header>
+
+<main class="container">
+  <h2>Security & Privacy</h2>
+
+  <div class="card">
+    <h3>Export data</h3>
+    <p class="muted">Download a copy of your saved searches and profile.</p>
+    <button id="exportData" class="btn">Export</button>
+  </div>
+
+  <div class="card">
+    <h3>Delete saved searches</h3>
+    <p class="muted">Clear your recent searches and saved locations.</p>
+    <button id="clearRecents" class="btn btn-ghost">Clear</button>
+  </div>
+
+  <div class="card">
+    <h3>Account & Permissions</h3>
+    <p class="muted">Manage permissions for location access and notifications.</p>
+  </div>
+</main>
+
+<script src="/js/core.js"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbgjyMYVbU7WpuG_R9isDRvq_bdU7hNCI&libraries=places&callback=initApp">
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('clearRecents').addEventListener('click', () => {
+      localStorage.removeItem('recentHobbies');
+      alert('Recent searches cleared');
+    });
+    document.getElementById('exportData').addEventListener('click', () => {
+      const data = {
+        profile: JSON.parse(localStorage.getItem('userProfile') || '{}'),
+        recent: JSON.parse(localStorage.getItem('recentHobbies') || '[]'),
+        settings: {
+          searchMode: localStorage.getItem('searchMode'),
+          sortOption: localStorage.getItem('sortOption'),
+          minRating: localStorage.getItem('minRating'),
+          wheelchairOnly: localStorage.getItem('wheelchairOnly')
+        }
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'hobbyfinder-data.json'; a.click(); URL.revokeObjectURL(url);
+    });
+  });
+</script>
+</body>
+</html>

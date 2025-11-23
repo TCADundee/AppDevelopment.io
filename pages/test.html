@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Hobby Finder</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<h1>Nearby Hobby Finder</h1>
+
+<!-- Search Mode -->
+<div class="search-options">
+    <label>
+        Search mode:
+        <select id="searchMode">
+            <option value="location">Use my location</option>
+            <option value="city">Search by city</option>
+        </select>
+    </label>
+    <input type="text" id="cityName" placeholder="Enter city name (if city search)">
+</div>
+
+<!-- Keyword Search -->
+<input type="text" id="keyword" placeholder="Enter hobby (e.g. archery)">
+<button onclick="findNearby()">Search</button>
+
+<!-- Settings Menu -->
+<button onclick="toggleSettings()">Settings ⚙️</button>
+<div id="settingsPanel" class="settings-panel" style="display:none;">
+    <label>
+        Sort by:
+        <select id="sortOption">
+            <option value="distance">Nearest</option>
+            <option value="rating">Highest rating</option>
+        </select>
+    </label>
+    <label>
+        Minimum rating:
+        <select id="minRating">
+            <option value="0">Any</option>
+            <option value="4">4+ stars</option>
+            <option value="5">5 stars only</option>
+        </select>
+    </label>
+    <label>
+        <input type="checkbox" id="wheelchairOnly"> Wheelchair accessible only
+    </label>
+</div>
+
+<p id="status">Waiting for input...</p>
+<div id="results"></div>
+
+<!-- Load Google Maps API -->
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbgjyMYVbU7WpuG_R9isDRvq_bdU7hNCI&libraries=places&callback=initApp">
+</script>
+<script src="app.js"></script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,22 @@
+{
+  "name": "Hobby Finder",
+  "short_name": "Hobbies",
+  "start_url": "index.html",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0e0e11",
+  "theme_color": "#6a6582",
+  "description": "Find nearby hobby locations, clubs, and venues using live location or city search.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

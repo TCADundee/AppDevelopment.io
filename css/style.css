@@ -1,0 +1,592 @@
+/* ============================================
+   THEME VARIABLES (colors unchanged)
+============================================ */
+:root {
+    --bg: #0e0e11;
+    --header: #6a6582;
+    --panel: #2b2a33;
+    --card: #3b3947;
+    --highlight: #7f79a5;
+    --muted: #b8b8c8;
+    --text: #ffffff;
+    --accent: #5d56ff;
+}
+
+/* ============================================
+   GLOBAL
+============================================ */
+* { box-sizing: border-box; }
+
+body.dark-theme {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+.container {
+    padding: 16px;
+    padding-bottom: 80px;
+}
+
+/* ============================================
+   HEADER (Matches mockup)
+============================================ */
+.header {
+    background: var(--header);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-bottom: 8px solid rgba(0,0,0,0.2);
+}
+
+.app-title {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+
+    /* Responsive size */
+    font-size: clamp(20px, 5vw, 40px);
+
+    /* Style */
+    letter-spacing: 1px;
+}
+
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.18);
+    cursor: pointer;
+}
+
+/* ============================================
+   SLIDE-IN SIDE MENU (Improved + Animated)
+============================================ */
+.off-screen-menu{
+    background-color: #0e0e11;
+    height: 100vh;
+    max-width: 70vw;
+    position: fixed;
+    top: 0;
+    left: -70vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50vb;
+    justify-content: center;
+    text-align: center;
+    font-size: 3rem;
+    transition: .4s ease-in-out;
+    z-index: 1;
+    overflow-y: auto;
+}
+
+.off-screen-menu.active{
+    left: 0;
+}
+
+.off-screen-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.off-screen-menu a {
+    display: block;
+    padding: 14px 22px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: background .40s ease;
+}
+
+.off-screen-menu a:hover {
+    background: #2b2a33;  /* lighter gray */
+}
+
+nav{
+    padding: 0;
+    display: flex;
+}
+
+.ham-menu{
+    height: 50px;
+    width: 45px;
+    margin-left: auto;
+    position: relative;
+}
+
+
+.ham-menu span{
+    height: 5px;
+    width: 100%;
+    background-color: white;
+    border-radius: 25px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: .3s ease;
+    z-index: 2;
+}
+
+.ham-menu span:nth-child(1){
+    top: 25%;
+}
+.ham-menu span:nth-child(3){
+    top: 75%;
+}
+
+.ham-menu.active span:nth-child(1){
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.ham-menu.active span:nth-child(2){
+    opacity: 0;
+}
+.ham-menu.active span:nth-child(3){
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+
+
+/* ============================================
+   SECTIONS / TEXT
+============================================ */
+
+.section h2 {
+    font-size: 19px;
+    font-weight: 700;
+    background-color: #6a6582;
+    border-radius: 12px;
+    text-align: center;
+}
+.section{
+    margin-top: 2vb;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* ============================================
+   CATEGORY CAROUSEL
+============================================ */
+.carousel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    border-radius: 16px;               /* More rounded */
+    scroll-behavior: smooth;
+}
+
+/* ============================================
+   CAROUSEL SCROLLBAR — Dark themed, rounded
+============================================ */
+.carousel {
+    scrollbar-width: thick;
+    scrollbar-color: var(--accent) #2b2a33;
+}
+
+
+.carousel::-webkit-scrollbar-track {
+    background: #2b2a33;   /* matches panel color */
+    border-radius: 10px;
+}
+
+.carousel::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+}
+
+.carousel::-webkit-scrollbar-thumb:hover {
+    background: #7a74ff;  /* lighter accent on hover */
+}
+
+
+.carousel-card {
+    flex: 0 0 calc(33.333% - 14px);  
+    max-width: calc(33.333% - 14px);
+    aspect-ratio: 1 / 1.3;           
+    padding: 10px;                    
+    position: relative;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    font-size: clamp(14px, 3.5vw, 18px); /* reactive text size */
+    font-weight: 600;
+
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    color: var(--text);
+}
+
+.carousel-card img.hobby-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.25;               /* fades image */
+}
+
+
+.carousel-card:hover {
+    transform: translateY(-5px);
+    transition: 0.15s ease;
+}
+
+.carousel-card .label {
+    position: relative;
+    z-index: 2;
+    padding: 6px;
+}
+
+#allHobbiesCarousel .carousel-card {
+    scroll-snap-align: start;
+}
+
+#allHobbiesCarousel {
+    scroll-snap-type: x mandatory;
+}
+
+
+/* ============================================
+   RECENT SECTION
+============================================ */
+.recent-list {
+    background: var(--panel);
+    padding: 14px;
+    border-radius: 14px;
+}
+
+.recent-item {
+    display: inline-block;
+    background: var(--card);
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin: 4px;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    text-align: center;
+}
+
+/* ============================================
+   PROFILE MODAL
+============================================ */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-card {
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 20px;
+    width: 92%;
+    max-width: 420px;
+}
+
+.profile-large {
+    width: 90px;
+    height: 90px;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.15);
+    object-fit: cover;
+}
+
+.profile-content {
+    display: flex;
+    gap: 16px;
+}
+
+.profile-details input {
+    width: 100%;
+    padding: 10px;
+    background: #1c1b22;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: var(--text);
+}
+
+.modal-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    background: var(--accent);
+    color: white;
+    padding: 15px;
+    border: none;
+    width: 100%;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.25);
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 15px;
+    color: var(--text);
+}
+
+/* ============================================
+   RESULTS PAGE
+============================================ */
+
+.search-bar-row {
+    display: flex;
+    flex-wrap: wrap;       /* Allow wrapping so they don’t overlap */
+    gap: 10px;
+}
+
+.app-title-results {
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#searchInput {
+    flex: 1;
+    width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: var(--panel);
+    color: var(--text);
+}
+
+#searchBtn {
+    padding: 10px 14px;
+    width: 25%;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+}
+
+
+.results-search {
+    flex: 1;
+    padding: 10px 14px;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 16px;
+}
+
+#resultsSearchBtn {
+    white-space: nowrap;
+}
+
+.search-bar-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+
+.active-term {
+    flex: 1;               /* Take remaining space */
+    min-width: 150px;      /* Prevent squishing too small */
+}
+.results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.place-card {
+    background: #4c4861;
+    border-radius: 18px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+}
+
+.card-top {
+    display: flex;
+    gap: 14px;
+}
+
+.place-img {
+    width: 140px;
+    height: 110px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #2f2c3c;
+}
+
+.place-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.place-title {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.place-desc {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.place-stars {
+    font-size: 16px;
+    color: gold;
+    margin-top: 4px;
+}
+
+.card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.15);
+    padding: 10px 12px;
+    border-radius: 12px;
+}
+
+.distance {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.rating-small {
+    font-size: 14px;
+    color: gold;
+}
+
+.details-btn {
+    background: var(--accent);
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.detail-block {
+    margin-bottom: 14px;
+    background: rgba(255,255,255,0.05);
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+.detail-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.detail-text {
+    font-size: 1.20rem;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.detail-link {
+    font-size: 1.20rem;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+.hour-line {
+    font-size: 1.1rem;      /* slightly larger than before */
+    padding: 2px 0;
+}
+
+
+/* ============================================
+   SETTINGS PAGE
+============================================ */
+.settings-card {
+    background: var(--panel);
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    margin-bottom: 20px;
+}
+
+.settings-card h3 {
+    margin-top: 0;
+}
+
+.input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background: #1c1b22;
+    border: none;
+    color: var(--text);
+}
+
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.slider {
+    width: 100%;
+    accent-color: var(--accent);
+}
+
+#distanceLabel {
+    font-weight: 600;
+    min-width: 50px;
+    text-align: right;
+    color: var(--text);
+}
+
