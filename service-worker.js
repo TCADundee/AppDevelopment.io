@@ -8,7 +8,6 @@ self.addEventListener("install", (event) => {
                 "/css/style.css",
                 "/js/core.js",
                 "/images/hobby-icon.png",
-                "/images/hobby-placeholder.png", // Optional, for placeholder image
                 "/pages/profile.html", // Optional: cache other pages
                 "/js/register.js",  // Optional: cache JavaScript files
                 "/js/login.js"       // Optional: cache JavaScript files
