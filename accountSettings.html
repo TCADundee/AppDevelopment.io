@@ -16,7 +16,8 @@
             <span></span>
             <span></span>
         </div>
-    </nav><div class="off-screen-menu">
+    </nav>
+    <div class="off-screen-menu">
         <ul>
             <li><a href="index.html"> Home Page</a></li>
             <li><a href="settings.html">Search Settings</a></li>
@@ -25,8 +26,7 @@
     </div>
     <!--App Title that appears in the center-->
     <h1 class="app-title">Hobby and Me</h1>
-
-    <!--Shows the users profile picture, opens a popup menu-->
+    <!--Shows the user's profile picture, opens a popup menu-->
     <img id="profileAvatar" class="profile-pic" src="" alt="profile" />
 </header>
 
@@ -51,7 +51,7 @@
   </div>
 
   <div class="card">
-    <p class="muted">Log-Out</p>
+    <button id="logOut" class="btn btn-ghost">Log Out</button>
   </div>
 </main>
 
@@ -62,10 +62,13 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Clear recent searches
     document.getElementById('clearRecents').addEventListener('click', () => {
       localStorage.removeItem('recentHobbies');
       alert('Recent searches cleared');
     });
+
+    // Export user data
     document.getElementById('exportData').addEventListener('click', () => {
       const data = {
         profile: JSON.parse(localStorage.getItem('userProfile') || '{}'),
@@ -80,9 +83,20 @@
       const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = 'hobbyfinder-data.json'; a.click(); URL.revokeObjectURL(url);
+      a.href = url;
+      a.download = 'hobbyfinder-data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Log out functionality
+    document.getElementById('logOut').addEventListener('click', () => {
+      
+      alert('You have been logged out.');
+      window.location.href = "signUp.html"; // Redirect to home page after logout
     });
   });
 </script>
+
 </body>
 </html>
