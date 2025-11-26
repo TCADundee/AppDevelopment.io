@@ -1,7 +1,7 @@
 {
   "name": "Hobby and Me",
   "short_name": "Hobby",
-  "start_url": "signUp.html",
+  "start_url": "./signUp.html",
   "display": "standalone",
   "background_color": "#0e0e11",
   "theme_color": "#6a6582",
@@ -9,12 +9,12 @@
     {
       "src": "img/hobby-icon.png", 
       "sizes": "192x192",
-      "type": "img/png"
+      "type": "image/png"
     },
     {
       "src": "img/hobby-icon.png",
       "sizes": "512x512",
-      "type": "img/png"
+      "type": "image/png"
     }
   ]
 }
