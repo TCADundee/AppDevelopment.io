@@ -71,7 +71,7 @@ function safeText(s) {
 
 async function loadProfileModal() {
     const container = document.createElement("div");
-    const modalHtml = await fetch("/pages/profile.html").then(r => r.text());
+    const modalHtml = await fetch("/docs/profile.html").then(r => r.text());
     container.innerHTML = modalHtml;
     document.body.appendChild(container.firstElementChild);
 
@@ -132,7 +132,7 @@ function buildRandomHobbies(containerId = "randomHobbyCarousel") {
 // Picked-up image path helper
 function hobbyImage(name) {
     const safe = encodeURIComponent(name);
-    return `/img/${safe}.png`;
+    return `/img/${safe}.jpg`;
 }
 
 // Check if image exists (cached result so we don't hammer filesystem)
@@ -192,12 +192,10 @@ function buildAllHobbiesCarousel(containerId = "allHobbiesCarousel") {
 function getAllHobbies() {
     const defaults = [
         "Art","Baking","Badminton","Chess",
-        "Climbing","Cooking","Cycling",
+        "Climbing","Cycling",
         "Dancing","Fishing","Football",
-        "Gardening","Guitar","Knitting",
-        "Piano","Photography","Pottery",
-        "Swimming","Table Tennis","Traveling",
-        "Volleyball","Woodworking","Yoga"
+        "Music","Piano","Pottery",
+        "Swimming","Volleyball","Yoga"
     ];
 
     const custom = JSON.parse(localStorage.getItem("customHobbies") || "[]");
