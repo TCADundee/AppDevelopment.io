@@ -33,7 +33,7 @@
       //Stores current user ID in local storage
       localStorage.setItem("hf_user_id", user.uid);
       //Opens up home page since existing users already have intro completed
-      window.location.href = "/docs/index.html";
+      window.location.href = "index.html";
     })
     .catch((error) => {
       const errorCode = error.code;

@@ -31,7 +31,7 @@
       //Stores current user ID in local storage
       localStorage.setItem("hf_user_id", user.uid);
       //Opens up intro page for new users
-      window.location.href = "/docs/intro.html";
+      window.location.href = "intro.html";
       // ...
     })
     .catch((error) => {

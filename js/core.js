@@ -71,7 +71,7 @@ function safeText(s) {
 
 async function loadProfileModal() {
     const container = document.createElement("div");
-    const modalHtml = await fetch("/docs/profile.html").then(r => r.text());
+    const modalHtml = await fetch("profile.html").then(r => r.text());
     container.innerHTML = modalHtml;
     document.body.appendChild(container.firstElementChild);
 
