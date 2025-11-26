@@ -484,9 +484,23 @@ if ("serviceWorker" in navigator) {
         });
 }
 
-// Offline alert on page load
-window.addEventListener("load", () => {
-    if (!navigator.onLine) {
-        alert("You are offline. Only saved places are available.");
-    }
+// Check if the user is offline and if the notification has already been shown
+if (!navigator.onLine && !localStorage.getItem('offlineNotificationShown')) {
+  // Show the offline notification
+  alert("You are offline. Only saved places are available.");
+  
+  // Set a flag in localStorage so that the notification doesn't show again
+  localStorage.setItem('offlineNotificationShown', 'true');
+}
+
+// Reset the flag when the user is back online
+window.addEventListener('online', () => {
+  localStorage.removeItem('offlineNotificationShown');
 });
+
+// Optionally, you can reset it on logout
+document.getElementById('logOut').addEventListener('click', () => {
+  localStorage.removeItem('offlineNotificationShown');
+  logOutUser();  // Call your existing logOutUser function
+});
+

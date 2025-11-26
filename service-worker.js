@@ -17,8 +17,8 @@ const FILES_TO_CACHE = [
 
   "js/core.js",
   "js/search.js",
-  "js/auth.js",
-
+  "js/register.js",
+  "js/login.js",
   "img/default.jpg",
   "img/icon-192.png",
   "img/icon-512.png"
