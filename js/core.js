@@ -14,24 +14,53 @@ const LS = {
     profile: "userProfile"
 };
 
+// ---------- per-user localStorage helpers ----------
+
+// Key under which we store the current logged-in user's UID
+const HF_USER_ID_KEY = "hf_user_id";
+
+// Who is the "current user" for this device?
+function getCurrentUserId() {
+    // If logged in, this should be the Firebase UID; otherwise we treat them as "guest"
+    return localStorage.getItem(HF_USER_ID_KEY) || "guest";
+}
+
+// Build a namespaced key like "UID:searchMode" or "guest:recentHobbies"
+function userKey(base) {
+    return `${getCurrentUserId()}:${base}`;
+}
+
+// Read a value for this user; if nothing stored yet, return fallback
+function lsGet(base, fallback = null) {
+    const v = localStorage.getItem(userKey(base));
+    return v === null ? fallback : v;
+}
+
+// Write a value for this user
+function lsSet(base, value) {
+    localStorage.setItem(userKey(base), value);
+}
+
+
 /* ============================
    SETTINGS HELPERS
 ============================ */
 function restoreSettingsToDOM() {
-    if ($("searchMode"))      $("searchMode").value = localStorage.getItem(LS.searchMode) || "location";
-    if ($("sortOption"))      $("sortOption").value = localStorage.getItem(LS.sortOption) || "distance";
-    if ($("minRating"))       $("minRating").value = localStorage.getItem(LS.minRating) || "0";
-    if ($("searchDistance"))  $("searchDistance").value = localStorage.getItem(LS.searchDistance) || "5";
-    if ($("wheelchairOnly"))  $("wheelchairOnly").checked = localStorage.getItem(LS.wheelchairOnly) === "true";
+    if ($("searchMode"))      $("searchMode").value      = lsGet(LS.searchMode, "location");
+    if ($("sortOption"))      $("sortOption").value      = lsGet(LS.sortOption, "distance");
+    if ($("minRating"))       $("minRating").value       = lsGet(LS.minRating, "0");
+    if ($("searchDistance"))  $("searchDistance").value  = lsGet(LS.searchDistance, "5");
+    if ($("wheelchairOnly"))  $("wheelchairOnly").checked = lsGet(LS.wheelchairOnly, "false") === "true";
 }
 
 function persistSettingsFromDOM() {
-    if ($("searchMode"))     localStorage.setItem(LS.searchMode, $("searchMode").value);
-    if ($("sortOption"))     localStorage.setItem(LS.sortOption, $("sortOption").value);
-    if ($("minRating"))      localStorage.setItem(LS.minRating, $("minRating").value);
-    if ($("searchDistance")) localStorage.setItem(LS.searchDistance, $("searchDistance").value);
-    if ($("wheelchairOnly")) localStorage.setItem(LS.wheelchairOnly, $("wheelchairOnly").checked ? "true" : "false");
+    if ($("searchMode"))     lsSet(LS.searchMode, $("searchMode").value);
+    if ($("sortOption"))     lsSet(LS.sortOption, $("sortOption").value);
+    if ($("minRating"))      lsSet(LS.minRating, $("minRating").value);
+    if ($("searchDistance")) lsSet(LS.searchDistance, $("searchDistance").value);
+    if ($("wheelchairOnly")) lsSet(LS.wheelchairOnly, $("wheelchairOnly").checked ? "true" : "false");
 }
+
 
 /* ============================
    UTILS (UI side)
@@ -55,13 +84,14 @@ async function loadProfileModal() {
    CATEGORY CLICK → RESULTS
 ============================ */
 function openCategoryAndSearch(term) {
-    // Save recent list
-    let rec = JSON.parse(localStorage.getItem(LS.recentList) || "[]");
+    // Save recent *for this user*
+    let rec = JSON.parse(lsGet(LS.recentList, "[]"));
     rec = rec.filter(x => x !== term);
     rec.unshift(term);
-    localStorage.setItem(LS.recentList, JSON.stringify(rec.slice(0, 30)));
+    lsSet(LS.recentList, JSON.stringify(rec.slice(0, 30)));
 
-    window.location.href = `results.html?query=${encodeURIComponent(term)}`;
+    // Navigate to results with term
+    window.location.href = `results.html?query=${"places+with+" + encodeURIComponent(term) + "+activities"}`;
 }
 
 /* ============================
@@ -191,15 +221,15 @@ function renderRecents(containerId = "recentList") {
     const container = $(containerId);
     if (!container) return;
 
-    const rec = JSON.parse(localStorage.getItem(LS.recentList) || "[]");
+    const rec = JSON.parse(lsGet(LS.recentList, "[]"));
 
     if (!rec.length) {
         container.innerHTML = `<p class="muted">No recent searches yet — try tapping a category!</p>`;
         return;
     }
 
-    //Only shows the 4 most recent.
     container.innerHTML = "";
+    // cap to 4 so they stay on one line
     rec.slice(0, 4).forEach(term => {
         const b = document.createElement("button");
         b.className = "recent-item";
@@ -225,12 +255,13 @@ function initProfileUI() {
     const nameInput = $("profileName");
     const emailInput= $("profileEmail");
 
-    // Load saved profile
-    const saved = JSON.parse(localStorage.getItem(LS.profile) || "{}");
-    avatar.src    = saved.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'/%3E";
-    if (preview)   preview.src   = saved.avatar || avatar.src;
-    if (nameInput) nameInput.value = saved.name || "";
-    if (emailInput)emailInput.value = saved.email || "";
+    // Load saved profile for THIS user
+    const saved = JSON.parse(lsGet(LS.profile, "{}"));
+
+    avatar.src = saved.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'/%3E";
+    if (preview)   preview.src    = saved.avatar || avatar.src;
+    if (nameInput) nameInput.value = saved.name  || "";
+    if (emailInput)emailInput.value= saved.email || "";
 
     avatar.addEventListener("click", () => modal && modal.classList.remove("hidden"));
     closeBtn && closeBtn.addEventListener("click", () => modal && modal.classList.add("hidden"));
@@ -250,16 +281,18 @@ function initProfileUI() {
 
     saveBtn && saveBtn.addEventListener("click", () => {
         const profile = {
-            name:  nameInput?.value  || "",
-            email: emailInput?.value || "",
-            avatar: preview?.src     || avatar.src
+            name:   nameInput?.value  || "",
+            email:  emailInput?.value || "",
+            avatar: preview?.src      || avatar.src
         };
-        localStorage.setItem(LS.profile, JSON.stringify(profile));
-        modal && modal.classList.add("hidden");
+        // save per user
+        lsSet(LS.profile, JSON.stringify(profile));
 
+        modal && modal.classList.add("hidden");
         document.querySelectorAll(".profile-pic").forEach(img => img.src = profile.avatar);
     });
 }
+
 
 /* ============================
    SIDE MENU (HAMBURGER)
@@ -311,14 +344,13 @@ function initDistanceSlider() {
 
     if (!slider || !label) return;
 
-    const savedDistance = localStorage.getItem(LS.searchDistance) || "5";
+    const savedDistance = lsGet(LS.searchDistance, "5");
     slider.value = savedDistance;
     label.textContent = savedDistance + " km";
 
-    // Only update the label live — do NOT save yet.
     slider.addEventListener("input", () => {
         label.textContent = slider.value + " km";
-        // actual saving happens when the user clicks "Save settings"
+        lsSet(LS.searchDistance, slider.value);
     });
 
     function updateDistanceVisibility() {
@@ -327,13 +359,14 @@ function initDistanceSlider() {
         distanceRow.style.display = (modeSel.value === "location") ? "flex" : "none";
     }
 
-    // Just change visibility, don't save here
     $("searchMode") && $("searchMode").addEventListener("change", () => {
+        persistSettingsFromDOM();
         updateDistanceVisibility();
     });
 
     updateDistanceVisibility();
 }
+
 
 
 /* ============================

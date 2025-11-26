@@ -32,50 +32,58 @@
 </header>
 
 <main class="container">
-  <h1>Search Settings</h1>
 
-  <label>Search mode</label>
-  <select id="searchMode" class="input">
-    <option value="location">Use my location</option>
-    <option value="city">Search by city</option>
-  </select>
+  <div class="settings-wrapper">
 
-  <div id="city-row" style="margin-top:8px;">
-    <label>City (autocomplete)</label>
-    <input id="cityName" class="input" placeholder="Start typing city..." />
-  </div>
+      <label>Search mode</label>
+      <select id="searchMode" class="input">
+        <option value="location">Use my location</option>
+        <option value="city">Search by city</option>
+      </select>
 
-  <label style="margin-top:12px;">Sort results by</label>
-  <select id="sortOption" class="input">
-    <option value="distance">Nearest first</option>
-    <option value="rating">Highest rated</option>
-    <option value="alpha">Alphabetical</option>
-  </select>
+      <!-- Only appears when city search is on -->
+      <div id="city-row" style="margin-top:8px;">
+        <label>City (autocomplete)</label>
+        <input id="cityName" class="input" placeholder="Start typing city..." />
+      </div>
 
-  <label style="margin-top:12px;">Search Distance</label>
-<div id="distance-row" class="slider-row">
-    <input id="searchDistance" type="range" min="1" max="20" value="5" step="1" class="slider" />
-    <span id="distanceLabel">5 km</span>
-</div>
+      <!-- Only appears when live location search is on -->
+      <label style="margin-top:12px;">Search Distance</label>
+      <div id="distance-row" class="slider-row">
+          <input id="searchDistance" type="range" min="1" max="15" value="5" step="1" class="slider" />
+          <span id="distanceLabel">5 km</span>
+      </div>
 
-  <label style="margin-top:12px;">Minimum rating</label>
-  <select id="minRating" class="input">
-    <option value="0">Any</option>
-    <option value="3">3★+</option>
-    <option value="4">4★+</option>
-    <option value="5">5★</option>
-  </select>
-  
+      <label style="margin-top:12px;">Sort results by</label>
+      <select id="sortOption" class="input">
+        <option value="distance">Nearest first</option>
+        <option value="rating">Highest rated</option>
+        <option value="alpha">Alphabetical</option>
+      </select>
 
-  <label style="display:block; margin-top:12px;">
-    <input id="wheelchairOnly" type="checkbox" /> Only show wheelchair accessible (requires Google data)
-  </label>
+      
 
-  <div style="margin-top:16px;">
-    <button id="saveSettingsBtn" class="btn">Save settings</button>
-    <a href="index.html" class="btn btn-ghost">Back</a>
-  </div>
+      <label style="margin-top:12px;">Minimum rating</label>
+      <select id="minRating" class="input">
+        <option value="0">Any</option>
+        <option value="3">3★+</option>
+        <option value="4">4★+</option>
+        <option value="5">5★</option>
+      </select>
+
+      <label style="display:block; margin-top:12px;">
+        <input id="wheelchairOnly" type="checkbox" /> Only show wheelchair accessible
+      </label>
+
+      <div style="margin-top:16px;">
+        <button id="saveSettingsBtn" class="btn">Save settings</button>
+        <a href="index.html" class="btn btn-ghost">Back</a>
+      </div>
+
+  </div> <!-- end wrapper -->
+
 </main>
+
 
 <!-- App script + Google Maps for autocomplete -->
 <script src="/js/core.js"></script>

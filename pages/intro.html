@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Getting Started</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dark-theme">
+
+<header class="header auth-header">
+    <h1 class="app-title">Hobby and Me</h1>
+</header>
+
+<main class="center-auth">
+
+    <div class="auth-card wide-card">
+
+        <h2 class="auth-title">Getting Started</h2>
+        <p class="muted" style="text-align:center; margin-bottom: 20px;">
+            Choose how you want searches to work.
+        </p>
+
+        <!-- Search Method -->
+        <div class="settings-card">
+            <h3>Search Method</h3>
+            <select id="searchMode" class="input">
+                <option value="location">Use Live Location</option>
+                <option value="city">Search by City</option>
+            </select>
+        </div>
+
+        <!-- City Box -->
+        <div class="settings-card" id="city-row">
+            <h3>Default City</h3>
+            <input id="cityName" class="input" placeholder="Enter your city…" />
+        </div>
+
+        <!-- Distance -->
+        <div class="settings-card" id="distance-row">
+            <h3>Search Distance</h3>
+            <div class="slider-row">
+                <input type="range" id="searchDistance" class="slider" min="1" max="15" value="5">
+                <span id="distanceLabel">5 km</span>
+            </div>
+        </div>
+
+
+        <!-- Sort -->
+        <div class="settings-card">
+            <h3>Sort Results By</h3>
+            <select id="sortOption" class="input">
+                <option value="distance">Distance</option>
+                <option value="rating">Rating</option>
+                <option value="alpha">Alphabetical</option>
+            </select>
+        </div>
+
+        <!-- Rating -->
+        <div class="settings-card">
+            <h3>Minimum Rating</h3>
+            <select id="minRating" class="input">
+                <option value="0">Any rating</option>
+                <option value="3">3★ and above</option>
+                <option value="4">4★ and above</option>
+                <option value="4.5">4.5★ and above</option>
+            </select>
+        </div>
+
+        <!-- Accessibility -->
+        <div class="settings-card">
+            <label style="display:flex;align-items:center;gap:10px;">
+                <input type="checkbox" id="wheelchairOnly" />
+                Wheelchair Accessible Only
+            </label>
+        </div>
+
+        <button class="btn" id="finishOnboarding">Finish Setup</button>
+    </div>
+
+</main>
+
+<script src="/js/core.js"></script>
+<script src="/js/search.js"></script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbgjyMYVbU7WpuG_R9isDRvq_bdU7hNCI&libraries=places&callback=initApp">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // restore values from core.js
+    if (typeof restoreSettingsToDOM === "function") {
+        restoreSettingsToDOM();
+    }
+
+    // Save values & exit
+    document.getElementById("finishOnboarding").addEventListener("click", () => {
+
+        if (typeof persistSettingsFromDOM === "function") {
+            persistSettingsFromDOM();
+        }
+
+        // mark onboarding complete
+        localStorage.setItem("onboardingDone", "true");
+
+        window.location.href = "index.html";
+    });
+});
+</script>
+
+</body>
+</html>
+

@@ -47,8 +47,8 @@ function initApp() {
         cityAutocomplete.addListener("place_changed", () => {
             const p = cityAutocomplete.getPlace();
             if (p && p.geometry) {
-                localStorage.setItem("hf_last_city", p.name);
-                localStorage.setItem("hf_last_city_coords", JSON.stringify({
+                lsSet("hf_last_city", p.name);
+                lsSet("hf_last_city_coords", JSON.stringify({
                     lat: p.geometry.location.lat(),
                     lng: p.geometry.location.lng()
                 }));
@@ -91,16 +91,16 @@ function initResultsFlow() {
     initResultsSearchBar();
 
     const params = new URLSearchParams(window.location.search);
-    const query  = params.get("query") || localStorage.getItem("hf_last_keyword") || "";
+    const query  = params.get("query") || lsGet("hf_last_keyword", "") || "";
 
-    const mode   = localStorage.getItem(LS.searchMode) || "location";
+    const mode   = lsGet(LS.searchMode, "location");
     const titleEl = document.querySelector(".app-title");
 
     if (titleEl) {
         if (mode === "location") {
             titleEl.textContent = "Results near you";
         } else {
-            const cityName = localStorage.getItem("hf_last_city") || "your city";
+            const cityName = lsGet("hf_last_city", "your city");
             titleEl.textContent = `Results near ${cityName}`;
         }
     }
@@ -117,17 +117,20 @@ function initResultsFlow() {
         return;
     }
 
-    localStorage.setItem("hf_last_keyword", query);
+    lsSet("hf_last_keyword", query);
     findNearby(query);
 }
+
 
 /* ============================
    FIND NEARBY (MODE SWITCH)
 ============================ */
 function findNearby(keyword) {
-    
+    if (typeof persistSettingsFromDOM === "function") {
+        persistSettingsFromDOM();
+    }
 
-    const mode = localStorage.getItem(LS.searchMode) || "location";
+    const mode = lsGet(LS.searchMode, "location");
 
     if (mode === "location") {
         if (!navigator.geolocation) {
@@ -144,8 +147,7 @@ function findNearby(keyword) {
             },
             err => {
                 $("status") && ($("status").textContent = "Location denied or unavailable.");
-                // fallback to last saved city coords if available
-                const saved = localStorage.getItem("hf_last_city_coords");
+                const saved = lsGet("hf_last_city_coords", null);
                 if (saved) {
                     userCoords = JSON.parse(saved);
                     doPlacesSearch(userCoords, keyword);
@@ -154,10 +156,9 @@ function findNearby(keyword) {
             { enableHighAccuracy: true, maximumAge: 1000 * 60 * 5, timeout: 10000 }
         );
     } else {
-        // city mode
         const cityVal = $("cityName")
             ? $("cityName").value.trim()
-            : localStorage.getItem("hf_last_city") || "";
+            : lsGet("hf_last_city", "") || "";
 
         if (!cityVal) {
             $("status") && ($("status").textContent = "Enter a city to search in settings.");
@@ -170,13 +171,12 @@ function findNearby(keyword) {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             };
-            localStorage.setItem("hf_last_city", place.name);
-            localStorage.setItem("hf_last_city_coords", JSON.stringify(userCoords));
+            lsSet("hf_last_city", place.name);
+            lsSet("hf_last_city_coords", JSON.stringify(userCoords));
             doPlacesSearch(userCoords, keyword);
             return;
         }
 
-        // fallback: geocode typed city
         geocoder.geocode({ address: cityVal }, (results, status) => {
             if (status !== "OK" || !results[0]) {
                 $("status") && ($("status").textContent = "City not found.");
@@ -184,29 +184,33 @@ function findNearby(keyword) {
             }
             const loc = results[0].geometry.location;
             userCoords = { lat: loc.lat(), lng: loc.lng() };
-            localStorage.setItem("hf_last_city", cityVal);
-            localStorage.setItem("hf_last_city_coords", JSON.stringify(userCoords));
+            lsSet("hf_last_city", cityVal);
+            lsSet("hf_last_city_coords", JSON.stringify(userCoords));
             doPlacesSearch(userCoords, keyword);
         });
     }
 }
+
 
 /* ============================
    DO PLACES SEARCH
 ============================ */
 function doPlacesSearch(coords, keyword) {
     if (!placesService) {
-        $("status") && ($("status").textContent = "Maps service not available.");
-        return;
-    }
+    $("status") && ($("status").textContent = "Maps service still loading...");
+    setTimeout(() => doPlacesSearch(coords, keyword), 400);
+    return;
+}
+
 
     $("status") && ($("status").textContent = `Searching for "${keyword}"...`);
 
+    const mode = lsGet(LS.searchMode, "location");
     let distanceKm;
 
     // Live location → use chosen slider distance
-    if (localStorage.getItem(LS.searchMode) === "location") {
-        distanceKm = Number(localStorage.getItem(LS.searchDistance) || 5);
+    if (mode === "location") {
+        distanceKm = Number(lsGet(LS.searchDistance, "5"))|| 5;
     }
     // City mode → ALWAYS 5 km
     else {
@@ -234,11 +238,11 @@ function doPlacesSearch(coords, keyword) {
         });
 
         // Rating filter
-        const minRating = Number(localStorage.getItem(LS.minRating) || 0);
+        const minRating = Number(lsGet(LS.minRating, "0") || 0);
         let filtered = places.filter(p => (p.rating ?? 0) >= minRating);
 
         // Wheelchair filter
-        if (localStorage.getItem(LS.wheelchairOnly) === "true") {
+        if (lsGet(LS.wheelchairOnly, "false") === "true") {
             const checks = await Promise.all(
                 filtered.map(p => new Promise(res => {
                     placesService.getDetails(
@@ -255,7 +259,7 @@ function doPlacesSearch(coords, keyword) {
         }
 
         // Sorting
-        const sort = localStorage.getItem(LS.sortOption) || "distance";
+        const sort = lsGet(LS.sortOption, "distance");
 
 
         if (sort === "distance") {
