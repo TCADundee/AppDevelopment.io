@@ -1,7 +1,7 @@
 
  // Imported Functions
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js ";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDutgzxX5T6flgVGlFnDRWbQlHwJwcvCaQ",

@@ -132,7 +132,7 @@ function buildRandomHobbies(containerId = "randomHobbyCarousel") {
 // Picked-up image path helper
 function hobbyImage(name) {
     const safe = encodeURIComponent(name);
-    return `/images/hobbies/${safe}.jpg`;
+    return `/img/${safe}.png`;
 }
 
 // Check if image exists (cached result so we don't hammer filesystem)
