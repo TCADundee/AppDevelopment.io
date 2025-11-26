@@ -98,7 +98,7 @@ function openCategoryAndSearch(term) {
 // Picked-up image path helper
 function hobbyImage(name) {
     const safe = encodeURIComponent(name);
-    return `/img/${safe}.png`;
+    return `img/${safe}.png`;
 }
 
 // Check if image exists (used for fallback logic)
