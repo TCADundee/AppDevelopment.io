@@ -5,11 +5,11 @@ const $ = id => document.getElementById(id);
 
 // Shared localStorage keys
 const LS = {
-    searchMode: "searchMode",          // "location" | "city"
-    sortOption: "sortOption",          // "distance" | "rating" | "alpha"
+    searchMode: "searchMode",         // "location" | "city"
+    sortOption: "sortOption",         // "distance" | "rating" | "alpha"
     minRating: "minRating",
     wheelchairOnly: "wheelchairOnly",
-    searchDistance: "searchDistance",  // distance in km
+    searchDistance: "searchDistance", // distance in km
     recentList: "recentHobbies",
     profile: "userProfile"
 };
@@ -43,19 +43,19 @@ function lsSet(base, value) {
 
 
 /* ============================
-   SETTINGS HELPERS
+    SETTINGS HELPERS
 ============================ */
 function restoreSettingsToDOM() {
-    if ($("searchMode"))      $("searchMode").value      = lsGet(LS.searchMode, "location");
-    if ($("sortOption"))      $("sortOption").value      = lsGet(LS.sortOption, "distance");
-    if ($("minRating"))       $("minRating").value       = lsGet(LS.minRating, "0");
-    if ($("searchDistance"))  $("searchDistance").value  = lsGet(LS.searchDistance, "5");
-    if ($("wheelchairOnly"))  $("wheelchairOnly").checked = lsGet(LS.wheelchairOnly, "false") === "true";
+    if ($("searchMode"))       $("searchMode").value       = lsGet(LS.searchMode, "location");
+    if ($("sortOption"))       $("sortOption").value       = lsGet(LS.sortOption, "distance");
+    if ($("minRating"))        $("minRating").value        = lsGet(LS.minRating, "0");
+    if ($("searchDistance"))   $("searchDistance").value   = lsGet(LS.searchDistance, "5");
+    if ($("wheelchairOnly"))   $("wheelchairOnly").checked = lsGet(LS.wheelchairOnly, "false") === "true";
 }
 
 function persistSettingsFromDOM() {
-    if ($("searchMode"))     lsSet(LS.searchMode, $("searchMode").value);
-    if ($("sortOption"))     lsSet(LS.sortOption, $("sortOption").value);
+    if ($("searchMode"))    lsSet(LS.searchMode, $("searchMode").value);
+    if ($("sortOption"))    lsSet(LS.sortOption, $("sortOption").value);
     if ($("minRating"))      lsSet(LS.minRating, $("minRating").value);
     if ($("searchDistance")) lsSet(LS.searchDistance, $("searchDistance").value);
     if ($("wheelchairOnly")) lsSet(LS.wheelchairOnly, $("wheelchairOnly").checked ? "true" : "false");
@@ -63,7 +63,7 @@ function persistSettingsFromDOM() {
 
 
 /* ============================
-   UTILS (UI side)
+    UTILS (UI side)
 ============================ */
 function safeText(s) {
     return s == null ? "" : String(s);
@@ -81,7 +81,7 @@ async function loadProfileModal() {
 
 
 /* ============================
-   CATEGORY CLICK → RESULTS
+    CATEGORY CLICK → RESULTS
 ============================ */
 function openCategoryAndSearch(term) {
     // Save recent *for this user*
@@ -94,8 +94,34 @@ function openCategoryAndSearch(term) {
     window.location.href = `results.html?query=${"places+with+" + encodeURIComponent(term) + "+activities"}`;
 }
 
+
+// Picked-up image path helper
+function hobbyImage(name) {
+    const safe = encodeURIComponent(name);
+    return `/img/${safe}.png`;
+}
+
+// Check if image exists (used for fallback logic)
+function resolveHobbyImage(name) {
+    return new Promise(resolve => {
+        const url = hobbyImage(name); 
+
+        const img = new Image();
+        img.onload = () => {
+            resolve(url); 
+        };
+        img.onerror = () => {
+            // Fallback path if the specific image fails to load
+            resolve("/img/default.jpg");
+        };
+
+        img.src = url; 
+    });
+}
+
+
 /* ============================
-   HOME: POPULAR HOBBIES CAROUSEL
+    HOME: POPULAR HOBBIES CAROUSEL
 ============================ */
 function buildRandomHobbies(containerId = "randomHobbyCarousel") {
     const container = $(containerId);
@@ -129,48 +155,47 @@ function buildRandomHobbies(containerId = "randomHobbyCarousel") {
     renderRandomHobbies(picks, container);
 }
 
-// Picked-up image path helper
-function hobbyImage(name) {
-    const safe = encodeURIComponent(name);
-    return `/img/${safe}.jpg`;
-}
-
-// Check if image exists (cached result so we don't hammer filesystem)
-const imageCache = {};
-
-function resolveHobbyImage(name) {
-    return new Promise(resolve => {
-        const url = hobbyImage(name);
-
-        // If checked before, return cached
-        if (imageCache[url] !== undefined) {
-            resolve(imageCache[url]);
-            return;
-        }
-
-        const img = new Image();
-        img.onload = () => { imageCache[url] = url; resolve(url); };
-        img.onerror = () => { imageCache[url] = "/img/default.jpg"; resolve("/img/default.jpg"); };
-
-        img.src = url;
-    });
-}
-
-
+// Function to render hobby cards with images (Uses Promise.all to ensure images are ready)
 function renderRandomHobbies(picks, container) {
-    container.innerHTML = "";
+    container.innerHTML = ""; // Clear the container
 
-    picks.forEach(name => {
-        const card = document.createElement("div");
-        card.className = "carousel-card";
-        card.style.minWidth = "100px";
-        card.textContent = name;
-        card.addEventListener("click", () => openCategoryAndSearch(name));
-        container.appendChild(card);
+    // 1. Map all hobby names to their image resolution Promises
+    const imagePromises = picks.map(name => resolveHobbyImage(name));
+
+    // 2. Wait for ALL promises to resolve
+    Promise.all(imagePromises).then(imageUrls => {
+        
+        // Build the cards only after all image URLs are ready
+        picks.forEach((name, index) => {
+            const imageUrl = imageUrls[index]; // Get the corresponding URL
+
+            const card = document.createElement("div");
+            card.className = "carousel-card";
+            card.style.minWidth = "100px";
+
+            // Add the image 
+            const img = document.createElement("img");
+            img.src = imageUrl;
+            img.alt = name;
+            img.className = "hobby-image";
+            card.appendChild(img);
+
+            // Add the hobby name text
+            const hobbyName = document.createElement("div");
+            hobbyName.className = "hobby-name";
+            hobbyName.textContent = name;
+            card.appendChild(hobbyName);
+
+            // Add event listener for card click
+            card.addEventListener("click", () => openCategoryAndSearch(name));
+            
+            // Append the fully-built card to the container
+            container.appendChild(card);
+        });
     });
 }
 
-
+// Renders the all hobbies cards with images
 function buildAllHobbiesCarousel(containerId = "allHobbiesCarousel") {
     const container = $(containerId);
     if (!container) return;
@@ -178,15 +203,38 @@ function buildAllHobbiesCarousel(containerId = "allHobbiesCarousel") {
     const hobbies = getAllHobbies();
     container.innerHTML = "";
 
-    hobbies.forEach(name => {
-        const card = document.createElement("button");
-        card.className = "carousel-card";
-        card.textContent = name;
-        card.addEventListener("click", () => openCategoryAndSearch(name));
-        container.appendChild(card);
+    // 1. Map all hobby names to their image resolution Promises
+    const imagePromises = hobbies.map(name => resolveHobbyImage(name));
+
+    // 2. Wait for ALL promises to resolve
+    Promise.all(imagePromises).then(imageUrls => {
+        
+        // Build the cards only after all image URLs are ready
+        hobbies.forEach((name, index) => {
+            const imageUrl = imageUrls[index];
+
+            const card = document.createElement("button");
+            card.className = "carousel-card";
+
+            // Add image
+            const img = document.createElement("img");
+            img.src = imageUrl;
+            img.alt = name;
+            img.className = "hobby-image";
+            card.appendChild(img);
+
+            // Add hobby name
+            const hobbyName = document.createElement("div");
+            hobbyName.className = "hobby-name";
+            hobbyName.textContent = name;
+            card.appendChild(hobbyName);
+
+            // Add event listener to navigate to the results page
+            card.addEventListener("click", () => openCategoryAndSearch(name));
+            container.appendChild(card);
+        });
     });
 }
-
 
 
 function getAllHobbies() {
@@ -213,7 +261,7 @@ function addCustomHobby(name) {
 
 
 /* ============================
-   HOME: RECENTLY VIEWED
+    HOME: RECENTLY VIEWED
 ============================ */
 function renderRecents(containerId = "recentList") {
     const container = $(containerId);
@@ -238,7 +286,7 @@ function renderRecents(containerId = "recentList") {
 }
 
 /* ============================
-   PROFILE MODAL + AVATAR
+    PROFILE MODAL + AVATAR
 ============================ */
 function initProfileUI() {
     const avatar = $("profileAvatar");
@@ -279,9 +327,9 @@ function initProfileUI() {
 
     saveBtn && saveBtn.addEventListener("click", () => {
         const profile = {
-            name:   nameInput?.value  || "",
-            email:  emailInput?.value || "",
-            avatar: preview?.src      || avatar.src
+            name:    nameInput?.value   || "",
+            email:   emailInput?.value || "",
+            avatar: preview?.src        || avatar.src
         };
         // save per user
         lsSet(LS.profile, JSON.stringify(profile));
@@ -293,7 +341,7 @@ function initProfileUI() {
 
 
 /* ============================
-   SIDE MENU (HAMBURGER)
+    SIDE MENU (HAMBURGER)
 ============================ */
 function initSideMenu() {
     const hamMenu       = document.querySelector(".ham-menu");
@@ -307,8 +355,8 @@ function initSideMenu() {
 }
 
 /* ============================
-   GLOBAL SEARCH BAR (HOME)
-   (Results page has its own handler in search.js)
+    GLOBAL SEARCH BAR (HOME)
+    (Results page has its own handler in search.js)
 ============================ */
 function initGlobalSearchBar() {
     const input = $("searchInput");
@@ -333,7 +381,7 @@ function initGlobalSearchBar() {
 }
 
 /* ============================
-   DISTANCE SLIDER (SETTINGS)
+    DISTANCE SLIDER (SETTINGS)
 ============================ */
 function initDistanceSlider() {
     const slider      = $("searchDistance");
@@ -368,7 +416,7 @@ function initDistanceSlider() {
 
 
 /* ============================
-   SETTINGS: CITY ROW SHOW/HIDE
+    SETTINGS: CITY ROW SHOW/HIDE
 ============================ */
 function initSettingsPageModeToggle() {
     if (!$("searchMode")) return;
@@ -389,7 +437,7 @@ function initSettingsPageModeToggle() {
 }
 
 /* ============================
-   DOMContentLoaded ENTRY
+    DOMContentLoaded ENTRY
 ============================ */
 document.addEventListener("DOMContentLoaded", () => {
     restoreSettingsToDOM();
@@ -402,7 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProfileModal();
 
     // Home page
-    // Home page
     if ($("randomHobbyCarousel")) {
         buildRandomHobbies();
     }
@@ -413,7 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if ($("recentList")) {
         renderRecents();
-}
+    }
 
     // Settings save button
     const saveSettingsBtn = $("saveSettingsBtn");

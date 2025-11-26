@@ -1,5 +1,5 @@
 /* ============================================
-   THEME VARIABLES (colors unchanged)
+    THEME VARIABLES (colors unchanged)
 ============================================ */
 :root {
     --bg: #0e0e11;
@@ -13,7 +13,7 @@
 }
 
 /* ============================================
-   GLOBAL
+    GLOBAL
 ============================================ */
 * { box-sizing: border-box; }
 
@@ -33,7 +33,7 @@ body.dark-theme {
 }
 
 /* ============================================
-   HEADER (Matches mockup)
+    HEADER
 ============================================ */
 .header {
     background: var(--header);
@@ -66,8 +66,9 @@ body.dark-theme {
 }
 
 /* ============================================
-   SLIDE-IN SIDE MENU (Improved + Animated)
+    SLIDE-IN SIDE MENU
 ============================================ */
+/* Use fixed position and a negative 'left' value to hide the menu, then slide it in using the 'active' class. */
 .off-screen-menu{
     background-color: #0e0e11;
     height: 100vh;
@@ -83,7 +84,7 @@ body.dark-theme {
     text-align: center;
     font-size: 3rem;
     transition: .4s ease-in-out;
-    z-index: 1;
+    z-index: 50;
     overflow-y: auto;
 }
 
@@ -108,7 +109,7 @@ body.dark-theme {
 }
 
 .off-screen-menu a:hover {
-    background: #2b2a33;  /* lighter gray */
+    background: #2b2a33;/* lighter gray */
 }
 
 nav{
@@ -124,6 +125,7 @@ nav{
 }
 
 
+/* Hamburger animation logic */
 .ham-menu span{
     height: 5px;
     width: 100%;
@@ -134,7 +136,7 @@ nav{
     top: 50%;
     transform: translate(-50%, -50%);
     transition: .3s ease;
-    z-index: 2;
+    z-index: 55;
 }
 
 .ham-menu span:nth-child(1){
@@ -158,7 +160,7 @@ nav{
 
 
 /* ============================
-   AUTH PAGES (Login / Signup)
+    AUTH PAGES (Login / Signup)
 ============================ */
 .header.auth-header {
     justify-content: center !important;
@@ -211,7 +213,7 @@ nav{
 }
 
 /* ============================================
-   SECTIONS / TEXT
+    SECTIONS / TEXT
 ============================================ */
 
 .section h2 {
@@ -231,20 +233,21 @@ nav{
 }
 
 /* ============================================
-   CATEGORY CAROUSEL
+    CATEGORY CAROUSEL
 ============================================ */
 .carousel {
     display: flex;
     gap: 16px;
     overflow-x: auto;
     padding-bottom: 10px;
-    border-radius: 16px;               /* More rounded */
+    border-radius: 16px;
     scroll-behavior: smooth;
 }
 
 /* ============================================
-   CAROUSEL SCROLLBAR — Dark themed, rounded
+    CAROUSEL SCROLLBAR — Dark themed, rounded
 ============================================ */
+/* Custom scrollbar styles for webkit browsers */
 .carousel {
     scrollbar-width: thick;
     scrollbar-color: var(--accent) #2b2a33;
@@ -252,7 +255,7 @@ nav{
 
 
 .carousel::-webkit-scrollbar-track {
-    background: #2b2a33;   /* matches panel color */
+    background: #2b2a33; /* matches panel color */
     border-radius: 10px;
 }
 
@@ -262,26 +265,23 @@ nav{
 }
 
 .carousel::-webkit-scrollbar-thumb:hover {
-    background: #7a74ff;  /* lighter accent on hover */
+    background: #7a74ff;/* lighter accent on hover */
 }
 
 
 .carousel-card {
-    flex: 0 0 calc(33.333% - 14px);  
+    /* Set card size to 1/3 minus the gap */
+    flex: 0 0 calc(33.333% - 14px); 
     max-width: calc(33.333% - 14px);
-    aspect-ratio: 1 / 1.3;           
-    padding: 10px;                    
+    aspect-ratio: 1 / 1.3;
+    padding: 10px; 
     position: relative;
     background: var(--card);
     border-radius: 20px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-
-    font-size: clamp(14px, 3.5vw, 18px); /* reactive text size */
+    
+    font-size: clamp(14px, 3.5vw, 18px); 
     font-weight: 600;
 
     cursor: pointer;
@@ -290,15 +290,50 @@ nav{
     color: var(--text);
 }
 
-.carousel-card img.hobby-img {
-    position: absolute;
-    inset: 0;
+/* Styling for the image element itself */
+.carousel-card img.hobby-image {
+    position: absolute; /* Takes image out of document flow */
+    inset: 0;/* Make it cover the entire card */
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.25;               /* fades image */
+    opacity: 0.25; /* Greyed out effect */
+    z-index: 1; /* Place image layer behind the text */
 }
 
+/* The element that holds the hobby name text.
+   This uses position: absolute and Flexbox to center the text both vertically and horizontally over the image.
+*/
+.carousel-card .hobby-name {
+    position: absolute; 
+    inset: 0;           /* Makes it cover the full card area */
+    z-index: 2; 
+
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;  /* Center vertically */
+    
+    /* Text appearance settings */
+    text-align: center; 
+    padding: 8px; /* Padding for multi-line text wrapping */
+    font-weight: bold;
+    color: var(--text);
+}
+
+
+/* NOTE: The .card-content rule is for a structural wrapper, not the name itself. 
+         Keeping the styles here just in case other carousels use this class. */
+.carousel-card .card-content {
+    position: relative;
+    z-index: 2; 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+}
 
 .carousel-card:hover {
     transform: translateY(-5px);
@@ -321,7 +356,7 @@ nav{
 
 
 /* ============================================
-   RECENT SECTION
+    RECENT SECTION
 ============================================ */
 .recent-list {
     background: var(--panel);
@@ -342,7 +377,7 @@ nav{
 }
 
 /* ============================================
-   PROFILE MODAL
+    PROFILE MODAL
 ============================================ */
 .modal {
     position: fixed;
@@ -417,12 +452,12 @@ nav{
 }
 
 /* ============================================
-   RESULTS PAGE
+    RESULTS PAGE
 ============================================ */
 
 .search-bar-row {
     display: flex;
-    flex-wrap: wrap;       /* Allow wrapping so they don’t overlap */
+    flex-wrap: wrap;  /* Allow wrapping so they don’t overlap */
     gap: 10px;
 }
 
@@ -475,10 +510,9 @@ nav{
     margin-bottom: 12px;
 }
 
-
 .active-term {
-    flex: 1;               /* Take remaining space */
-    min-width: 150px;      /* Prevent squishing too small */
+    flex: 1;  /* Take remaining space */
+    min-width: 150px; /* Prevent squishing too small */
 }
 .results-list {
     display: flex;
@@ -593,13 +627,13 @@ nav{
 }
 
 .hour-line {
-    font-size: 1.1rem;      /* slightly larger than before */
+    font-size: 1.1rem;      /* slightly larger than before */
     padding: 2px 0;
 }
 
 
 /* ============================================
-   SETTINGS PAGE
+    SETTINGS PAGE
 ============================================ */
 .settings-card {
     background: var(--panel);
@@ -609,6 +643,7 @@ nav{
     margin-bottom: 20px;
 }
 
+/* Distance row layout setup */
 .settings-card#distance-row {
     display: flex;
     flex-direction: column;
@@ -633,7 +668,7 @@ nav{
 /* Changes width of page based on size of display */
 .settings-wrapper {
     width: 92%;
-    max-width: 700px;   
+    max-width: 700px;   
     margin: 0 auto;
     margin-top: 20px;
 }
@@ -683,4 +718,3 @@ nav{
     text-align: right;
     color: var(--text);
 }
-

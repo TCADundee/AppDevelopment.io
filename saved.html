@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favourites - Hobby and Me</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+
+<header class="header">
+    <!-- Hamburger + slide menu -->
+    <nav>
+        <div class="ham-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="off-screen-menu">
+        <ul>
+            <li><a href="index.html">Home Page</a></li>
+            <li><a href="settings.html">Search Settings</a></li>
+            <li><a href="accountSettings.html">Security and Privacy</a></li>
+        </ul>
+    </div>
+
+    <!-- Title -->
+    <h1 class="app-title">Favourites</h1>
+
+    <!-- Profile avatar -->
+    <img id="profileAvatar" class="profile-pic" src="" alt="profile" />
+</header>
+
+
+<main class="container">
+    <section class="section">
+        <h2>Your Saved Places</h2>
+        <div id="savedPlacesContainer"></div>
+    </section>
+</main>
+
+
+<script src="js/core.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("savedPlacesContainer");
+    
+    // Use the exact key from the addToFavourites function
+    const key = "favourites"; 
+    
+    // Load favourites
+    const favourites = JSON.parse(localStorage.getItem(key) || "[]");
+
+    if (!favourites.length) {
+        container.innerHTML =
+            "<p class='muted'>You have no favourite places yet. Try adding some from the results page.</p>";
+        return;
+    }
+
+    favourites.forEach(place => {
+        const card = document.createElement("div");
+        card.className = "place-card";
+
+        // VITAL: Use the saved static photoUrl
+        const imgSrc = place.photoUrl || "https://via.placeholder.com/120x90?text=No+Image";
+
+        // Generate the rating stars
+        const ratingStars = place.rating 
+            ? "★".repeat(Math.round(place.rating)) + "☆".repeat(5 - Math.round(place.rating))
+            : "No rating";
+
+        // Generate the distance string
+        const distanceStr = place.distanceKm
+            ? place.distanceKm.toFixed(1) + " km away"
+            : "";
+
+        card.innerHTML = `
+            <div class="card-top">
+                <img class="place-img" src="${imgSrc}" alt="Preview">
+                <div class="place-info">
+                    <div class="place-title">${place.name}</div>
+                    <div class="place-desc">${place.vicinity || "No description available"}</div>
+                    <div class="place-stars">${ratingStars}</div>
+                </div>
+            </div>
+
+            <div class="card-bottom">
+                <div class="distance">${distanceStr}</div>
+                <button class="details-btn">Details</button>
+                <button class="remove-btn">🗑️ Remove</button> </div>
+
+            <div class="place-details" style="display:none; margin-top:10px;">
+                <div class="muted">
+                    Further details (like phone/website) are only available 
+                    on the results page by clicking 'Details' due to Google Maps API limitations.
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+
+        // Add remove functionality
+        card.querySelector(".remove-btn").addEventListener("click", () => {
+            removeFavourite(place.place_id);
+            // Refresh the container
+            card.remove(); 
+            if (!document.querySelectorAll('.place-card').length) {
+                container.innerHTML = "<p class='muted'>You have no favourite places yet. Try adding some from the results page.</p>";
+            }
+        });
+        
+        // You can add a details toggle here, but without the Google Maps API 
+        // to call getDetails(), you can only show the limited saved data.
+        card.querySelector(".details-btn").addEventListener("click", () => {
+            const detailsEl = card.querySelector(".place-details");
+            detailsEl.style.display = detailsEl.style.display === "block" ? "none" : "block";
+        });
+    });
+});
+
+// New function to remove a favourite
+function removeFavourite(placeId) {
+    let favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
+    favourites = favourites.filter(fav => fav.place_id !== placeId);
+    localStorage.setItem("favourites", JSON.stringify(favourites));
+}
+</script>
+
+</body>
+</html>

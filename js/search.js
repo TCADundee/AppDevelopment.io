@@ -318,11 +318,16 @@ function renderPlacesList(list) {
             <div class="card-bottom">
                 <div class="distance">${distanceStr}</div>
                 <button class="details-btn">Details</button>
+                <button class="favourite-btn">❤️ Add to Favourites</button> <!-- Favourite Button -->
             </div>
             <div class="place-details" style="display:none; margin-top:10px;"></div>
         `;
 
         out.appendChild(card);
+
+        // Add favourite functionality
+        const favouriteBtn = card.querySelector(".favourite-btn");
+        favouriteBtn.addEventListener("click", () => addToFavourites(place));
 
         const detailsBtn = card.querySelector(".details-btn");
         const detailsEl  = card.querySelector(".place-details");
@@ -430,6 +435,39 @@ function renderPlacesList(list) {
         });
     });
 }
+
+// Function to add place to favourites
+function addToFavourites(place) {
+    // 1. Determine the photo URL to save statically
+    let photoUrl = "https://via.placeholder.com/120x90?text=No+Image";
+    if (place.photos && place.photos.length) {
+        // This method call works because Google Maps API is loaded on the results page
+        photoUrl = place.photos[0].getUrl({ maxWidth: 300, maxHeight: 200 });
+    }
+
+    // 2. Create a simplified, durable object to save
+    const placeToSave = {
+        place_id: place.place_id,
+        name: place.name,
+        vicinity: place.vicinity,
+        rating: place.rating,
+        distanceKm: place.distanceKm,
+        photoUrl: photoUrl // Save the static URL string here
+        // We cannot save the full Google PlacePhoto object
+    };
+
+    let favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
+
+    // Avoid duplicates
+    if (!favourites.some(fav => fav.place_id === placeToSave.place_id)) {
+        favourites.push(placeToSave);
+        localStorage.setItem("favourites", JSON.stringify(favourites));
+        alert(`${placeToSave.name} has been added to your favourites!`);
+    } else {
+        alert(`${placeToSave.name} is already in your favourites!`);
+    }
+}
+
 
 // Expose for Google Maps script callback
 window.initApp = initApp;
