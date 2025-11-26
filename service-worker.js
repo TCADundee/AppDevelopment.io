@@ -4,7 +4,7 @@ self.addEventListener("install", (event) => {
         caches.open("hobby-cache").then((cache) => {
             return cache.addAll([
                 "/",
-                "/pages/index.html",
+                "index.html",
                 "/css/style.css",
                 "/js/core.js",
                 "/img/hobby-icon.png",
