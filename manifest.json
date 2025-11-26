@@ -7,12 +7,12 @@
   "theme_color": "#6a6582",
   "icons": [
     {
-      "src": "/img/hobby-icon.png", 
+      "src": "img/hobby-icon.png", 
       "sizes": "192x192",
       "type": "img/png"
     },
     {
-      "src": "/img/hobby-icon.png",
+      "src": "img/hobby-icon.png",
       "sizes": "512x512",
       "type": "img/png"
     }

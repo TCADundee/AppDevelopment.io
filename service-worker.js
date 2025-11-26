@@ -5,12 +5,12 @@ self.addEventListener("install", (event) => {
             return cache.addAll([
                 "/",
                 "index.html",
-                "/css/style.css",
-                "/js/core.js",
-                "/img/hobby-icon.png",
+                "css/style.css",
+                "js/core.js",
+                "img/hobby-icon.png",
                 "profile.html", // Optional: cache other pages
-                "/js/register.js",  // Optional: cache JavaScript files
-                "/js/login.js"       // Optional: cache JavaScript files
+                "js/register.js",  // Optional: cache JavaScript files
+                "js/login.js"       // Optional: cache JavaScript files
             ]);
         })
     );
