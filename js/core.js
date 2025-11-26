@@ -473,9 +473,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-//Service Worker registration
+// Service Worker registration
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js")
+    navigator.serviceWorker.register("service-worker.js")
         .then(() => {
             console.log("Service Worker Registered");
         })
@@ -483,3 +483,10 @@ if ("serviceWorker" in navigator) {
             console.log("Service Worker Registration Failed", error);
         });
 }
+
+// Offline alert on page load
+window.addEventListener("load", () => {
+    if (!navigator.onLine) {
+        alert("You are offline. Only saved places are available.");
+    }
+});

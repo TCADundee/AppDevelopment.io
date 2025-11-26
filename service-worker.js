@@ -1,27 +1,52 @@
-// Caching essential files during service worker installation
-self.addEventListener("install", (event) => {
-    event.waitUntil(
-        caches.open("hobby-cache").then((cache) => {
-            return cache.addAll([
-                "/",
-                "index.html",
-                "css/style.css",
-                "js/core.js",
-                "img/hobby-icon.png",
-                "profile.html", // Optional: cache other pages
-                "js/register.js",  // Optional: cache JavaScript files
-                "js/login.js"       // Optional: cache JavaScript files
-            ]);
-        })
-    );
+const CACHE_NAME = "hobbyme-v1";
+
+const FILES_TO_CACHE = [
+  "index.html",
+  "signUp.html",
+  "login.html",
+  "results.html",
+  "settings.html",
+  "saved.html",
+  "accountSettings.html",
+  "css/style.css",
+  "js/core.js",
+  "js/search.js",
+  "img/default.jpg",
+  "manifest.json"
+];
+
+// Install SW
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+  );
 });
 
-// Fetch event to serve cached content when offline
-self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            // If the requested file is in cache, serve it; otherwise, fetch from network
-            return response || fetch(event.request);
-        })
-    );
+// Activate (clean old caches)
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    )
+  );
 });
+
+// Fetch fallback
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      // Serve from cache OR fetch new
+      return (
+        response ||
+        fetch(event.request).catch(() =>
+          caches.match("index.html") // fallback when fully offline
+        )
+      );
+    })
+  );
+});
+
