@@ -483,7 +483,6 @@ if ("serviceWorker" in navigator) {
             console.log("Service Worker Registration Failed", error);
         });
 }
-<<<<<<< HEAD
 
 // Offline alert on page load
 window.addEventListener("load", () => {
@@ -491,5 +490,3 @@ window.addEventListener("load", () => {
         alert("You are offline. Only saved places are available.");
     }
 });
-=======
->>>>>>> 56c8a92f93f0bdb3ff964dfab386c1db8132968e
