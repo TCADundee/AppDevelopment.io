@@ -1,6 +1,6 @@
 {
   "name": "Hobby and Me",
-  "short_name": "Hobby",
+  "short_name": "Hobby&Me",
   "start_url": "./signUp.html",
   "display": "standalone",
   "background_color": "#0e0e11",

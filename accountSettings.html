@@ -9,7 +9,7 @@
 </head>
 <body class="dark-theme">
 <header class="header">
-    <!--This is the Hamburger symbol as well as the slide in menu-->
+    <!-- Hamburger symbol for the side menu -->
     <nav>
         <div class="ham-menu">
             <span></span>
@@ -24,9 +24,8 @@
             <li><a href="saved.html">Favourited Locations</a></li>
         </ul>
     </div>
-    <!--App Title that appears in the center-->
+    <!-- App title and profile picture -->
     <h1 class="app-title">Hobby and Me</h1>
-    <!--Shows the user's profile picture, opens a popup menu-->
     <img id="profileAvatar" class="profile-pic" src="" alt="profile" />
 </header>
 
@@ -40,8 +39,8 @@
   </div>
 
   <div class="card">
-    <h3>Delete saved searches</h3>
-    <p class="muted">Clear your recent searches and saved locations.</p>
+    <h3>Clear recent searches</h3>
+    <p class="muted">Clear your recent searches and visited categories.</p>
     <button id="clearRecents" class="btn btn-ghost">Clear</button>
   </div>
 
@@ -50,6 +49,7 @@
     <p class="muted">Manage permissions for location access and notifications.</p>
   </div>
 
+  <!-- Log-Out Button -->
   <div class="card">
     <button id="logOut" class="btn btn-ghost">Log Out</button>
   </div>
@@ -89,14 +89,17 @@
       URL.revokeObjectURL(url);
     });
 
+
     // Log out functionality
     document.getElementById('logOut').addEventListener('click', () => {
-      
+      // Clear user ID from localStorage and handle redirection to signUp page
+      localStorage.removeItem('hf_user_id'); // Clear the user ID from localStorage
       alert('You have been logged out.');
-      window.location.href = "signUp.html"; // Redirect to home page after logout
+      window.location.href = "signUp.html";  // Redirect to sign-up page after logout
     });
   });
 </script>
 
 </body>
 </html>
+
